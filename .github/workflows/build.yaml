@@ -1,0 +1,46 @@
+name: Build README
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron:  "0 * * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v2
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: pip caching
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: pip install
+      run: |
+        python -m pip install -r requirements.txt
+    - name: update readme
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
+        USER: "rachel-ng"
+      run: |-
+        python build_me.py
+        cat README.md
+    - name: push if changed
+      run: |-
+        git diff
+        git config --global user.email "rng+job@stuy.edu"
+        git config --global user.name "job"
+        git diff --quiet src/log.txt || (git add src/log.txt && git commit -m "press f to pay respects")
+        ! (grep "b30000" src/img.svg) || (git add src/img.svg && git commit -m "press f to pay respects")
+        git diff --quiet src/img.svg || (git add src/img.svg && git commit -m "update img")
+        git diff --quiet README.md || (git add README.md && git commit -m "update readme")
+        git push
+
