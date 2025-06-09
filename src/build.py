@@ -3,7 +3,7 @@
 import os, sys
 import requests, urllib3
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone 
 import arrow 
 import random
 import string
@@ -55,7 +55,7 @@ def warning_the_following(loc, err):
 
     write_file(IMG_FILE, img)
 
-    print("error ({}): {}\t{}\n".format(datetime.utcnow(), loc, err))
+    print("error ({}): {}\t{}\n".format(datetime.now(timezone.utc), loc, err))
 
     sys.exit()
 
