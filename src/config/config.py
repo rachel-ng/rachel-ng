@@ -30,7 +30,7 @@ class Settings(BaseSettings):
 
     readme: str = "README.md"
     template: str = "template"
-    etc: str = "src/etc"
+    _etc: str = "src/_etc"
     img: str = "img.svg"
     colors: str = "colors.json"
 

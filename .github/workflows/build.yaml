@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
 
     steps:
     - name: checkout repo
@@ -51,6 +54,6 @@ jobs:
 
         echo "update img"
         git diff --quiet README.md || (git add README.md && git commit -m ".")
-        git diff --quiet src/etc/img.svg || (git add src/etc/img.svg && git commit -m "𓆟")
+        git diff --quiet src/_etc/img.svg || (git add src/_etc/img.svg && git commit -m "𓆟")
 
         git push

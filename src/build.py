@@ -17,9 +17,9 @@ logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 
 README_FILE = settings.readme
-TEMPLATE_FILE = os.path.join(settings.etc, settings.template)
-IMG_FILE = os.path.join(settings.etc, settings.img)
-COLORS = read_json(os.path.join(settings.etc, settings.colors))
+TEMPLATE_FILE = os.path.join(settings._etc, settings.template)
+IMG_FILE = os.path.join(settings._etc, settings.img)
+COLORS = read_json(os.path.join(settings._etc, settings.colors))
 
 
 def update_color(img: str, color: str) -> str:
