@@ -1,27 +1,26 @@
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Sequence
 import json
 
 
+def read_file(file_name: str | Path, lines: bool = True) -> str | list[str]:
+    path = Path(file_name)
+    if lines:
+        return path.read_text(encoding="utf-8").splitlines(keepends=True)
 
-def read_file(file_name: str, lines=True) -> str:
-    with open(file_name, "r") as f:
-        if lines:
-            contents = f.readlines()
-        else:
-            contents = f.read()
+    return path.read_text(encoding="utf-8")
 
-        f.close()
 
-        return contents
+def write_file(file_name: str | Path, content: str | Sequence[str], lines: bool = True) -> None:
+    path = Path(file_name)
+    if lines:
+        path.write_text("".join(content), encoding="utf-8")
+    else:
+        path.write_text(content, encoding="utf-8")
 
-def write_file(file_name: str, content: str, lines=True):
-    with open(file_name, "w") as f:
-        if lines:
-            f.writelines(content)
-        else:
-            f.write(content)
 
-        f.close()
-
-def read_json(file_name: str) -> dict:
-    with open(file_name, 'r') as f:
-        return json.load(f)
+def read_json(file_name: str | Path) -> dict:
+    path = Path(file_name)
+    return json.loads(path.read_text(encoding="utf-8"))

@@ -1,49 +1,44 @@
-import os
+from __future__ import annotations
+
 import logging
-from functools import cache
+from pathlib import Path
 
 from pydantic import BaseModel, Field, SecretStr, field_serializer
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from pydantic_settings import BaseSettings
 
 
 class Headers(BaseModel):
-    authorization: SecretStr = Field(serialization_alias='Authorization')
-    accept: str = Field(serialization_alias='Accept')
-    tz: str = Field(serialization_alias='Time-Zone')
+    authorization: SecretStr = Field(serialization_alias="Authorization")
+    accept: str = Field(serialization_alias="Accept")
+    tz: str = Field(serialization_alias="Time-Zone")
 
-    @field_serializer('authorization', 'Authorization', check_fields=False)
-    def serialize_secret(self, value: SecretStr) -> str:
+    @field_serializer("authorization")
+    def serialize_authorization(self, value: SecretStr) -> str:
         return value.get_secret_value()
 
 
 class Settings(BaseSettings):
     name: str
-
     token: SecretStr
     username: str
-
     url: str
     headers: Headers
-
     branch: str
 
-    readme: str = "README.md"
+    readme: Path = Path("README.md")
     template: str = "template"
-    _etc: str = "src/_etc"
+    _etc: Path = Path("src/_etc")
     img: str = "img.svg"
     colors: str = "colors.json"
 
-    class Config(SettingsConfigDict):
-        env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "conf")
-        env_file_encoding = "utf-8"
-        env_nested_delimiter = "__"
+    model_config = {
+        "env_file": Path(__file__).resolve().parent / "conf",
+        "env_file_encoding": "utf-8",
+        "env_nested_delimiter": "__",
+        "extra": "forbid",
+    }
 
 
 logger = logging.getLogger(__name__)
-
-
 settings = Settings()
-
 logger.info(settings)
-# logger.debug(settings.token.get_secret_value())

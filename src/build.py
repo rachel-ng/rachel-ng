@@ -1,39 +1,36 @@
-import os
-import sys
-from datetime import datetime, timedelta
+from __future__ import annotations
 
-import requests
+from datetime import datetime, timedelta
+from pathlib import Path
+import logging
+
 import arrow
+import requests
 
 from config.config import settings
 from util.io import read_file, write_file, read_json
 from util.const import DT_FORMAT, LOG_FORMAT
 
-import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 
 
 
-README_FILE = settings.readme
-TEMPLATE_FILE = os.path.join(settings._etc, settings.template)
-IMG_FILE = os.path.join(settings._etc, settings.img)
-COLORS = read_json(os.path.join(settings._etc, settings.colors))
+README_FILE = Path(settings.readme)
+TEMPLATE_FILE = Path(settings._etc) / settings.template
+IMG_FILE = Path(settings._etc) / settings.img
+COLORS = read_json(Path(settings._etc) / settings.colors)
 
 
-def update_color(img: str, color: str) -> str:
+def update_color(img: list[str], color: str) -> list[str]:
     logger.info("updating color...")
 
-    line = [(i,v) for i,v in enumerate(img) if "fill" in v]
-    if len(line) == 0:
+    fill_index = next((index for index, line in enumerate(img) if "fill" in line), None)
+    if fill_index is None:
         logger.error('"fill" not found in img')
         raise ValueError('"fill" not found in img')
 
-    line = line[0]
-    logger.debug(line)
-
-    img[line[0]] = f'         fill="#{color}"\n'
+    img[fill_index] = f'         fill="#${color}"\n'
     logger.debug("".join(img))
     return img
 
