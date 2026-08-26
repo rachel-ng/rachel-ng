@@ -30,7 +30,7 @@ def update_color(img: list[str], color: str) -> list[str]:
         logger.error('"fill" not found in img')
         raise ValueError('"fill" not found in img')
 
-    img[fill_index] = f'         fill="#${color}"\n'
+    img[fill_index] = f'         fill="#{color}"\n'
     logger.debug("".join(img))
     return img
 
